@@ -52,4 +52,9 @@ cd ../runit-services && makepkg -si
 cd ../sv-helper && makepkg -si
 sudo ln -s /etc/sv/sshd /service/sshd
 sudo ln -s /etc/sv/cron /service/cron
+sudo socklog-conf unix root daemon
+sudo socklog-conf klog root daemon
+ln -s /etc/sv/socklog-unix /service/socklog-unix
+ln -s /etc/sv/socklog-klog /service/socklog-klog
 sudo /sbin/init.sysv 6  # This causes the machine to reboot so runit takes over.
+
