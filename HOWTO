@@ -1,0 +1,55 @@
+Edit /etc/rc.conf - enable either static or DHCP (by setting 'interface=eth0'), set LOCALE, and hostname, add sshd to DAEMONS
+
+Modify /etc/hosts and add hostname to localhost (e.g add 'freeswitch' to localhost line)
+
+Modify /etc/locale.gen to include all required locales, then run /usr/sbin/locale-gen
+
+Modify /etc/pacman.conf and add freeswitch.org and required custom repos to below [custom], remember to remove the '#' from [custom] line
+
+Modify /etc/pacman.conf to enable most options such as UseSyslog, ShowSize, UseDelta, TotalDownload, and CheckSpace.
+
+Remove /etc/profile.d/locale.sh if it exists. The system will regenerate it.
+
+Make sure that nothing is mount on /mnt as the upcoming package(s) upgrade(s) will modify it.
+
+Run dhcpcd eth0
+
+Run pacman -Syy to update all package lists.
+Then run pacman -Syu  to update the entire system. Will have to run twice because pacman gets updated first, and _then_ you can update the system.
+
+Install additional packages - sudo, xz, readline, pam, ncurses, linux-api-headers, openssh, openssl, and base-devel if not selected during installation of the initial system
+
+Add required user(s) such as callcenter and freeswitch.
+
+Add additional non-root user and add additional group membership to 'wheel'
+Use visudo to enable 'wheel' group rights to use sudo. Use first one as it requires the user to enter their own password to execute sudo.
+
+Once all is done, reboot the system to ensure it boots clean.
+
+Now to install runit properly. See these URLS
+--------
+https://wiki.archlinux.org/index.php/Arch_User_Repository
+https://wiki.archlinux.org/index.php/Runit
+
+Now do the following
+-----
+mkdir $HOME/builds
+cd $HOME/builds
+wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz
+wget http://aur.archlinux.org/packages/ru/runit-dietlibc/runit-dietlibc.tar.gz
+wget http://aur.archlinux.org/packages/ru/runit-run/runit-run.tar.gz
+wget http://aur.archlinux.org/packages/ru/runit-services/runit-services.tar.gz
+wget http://aur.archlinux.org/packages/sv/sv-helper/sv-helper.tar.gz
+wget http://aur.archlinux.org/packages/so/socklog-dietlibc/socklog-dietlibc.tar.gz
+
+for name in ./*.gz ; do tar -xzvf $name ; done
+
+cd fgetty && makepkg -si
+cd ../runit-dietlib && makepkg -si
+cd ../runit-run && makepkg -si
+cd ../socklog-dietlib && makepkg -si
+cd ../runit-services && makepkg -si
+cd ../sv-helper && makepkg -si
+sudo ln -s /etc/sv/sshd /service/sshd
+sudo ln -s /etc/sv/cron /service/cron
+sudo /sbin/init.sysv 6  # This causes the machine to reboot so runit takes over.
