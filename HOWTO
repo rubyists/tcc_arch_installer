@@ -19,7 +19,10 @@ Then run pacman -Syu  to update the entire system. Will have to run twice becaus
 
 Install additional packages - sudo, xz, readline, pam, ncurses, linux-api-headers, openssh, openssl, and base-devel if not selected during installation of the initial system
 
-Add required user(s) such as callcenter and freeswitch.
+Add required user 'callcenter'
+Copy authorized_keys into new 'callcenter' user.
+
+NOTE: later install of freeswitch will create the freeswitch user and group.
 
 Add additional non-root user and add additional group membership to 'wheel'
 Use visudo to enable 'wheel' group rights to use sudo. Use first one as it requires the user to enter their own password to execute sudo.
