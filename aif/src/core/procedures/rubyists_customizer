@@ -5,11 +5,11 @@
 customizer_system_prep ()
 {
   # <!-- begin_system_prep = Rubyists, LLC. Default Build -->
-  # mkdir-p /usr/local/rubyists/config
+  # mkdir -p /usr/local/rubyists/config
   # cd /usr/local/rubyists/config
   # git clone git@githost.dom/rubyists/default_build.git
   # cd default_build
-  # echo "Execute the default_build scripts."
+  # echo "Execute the default_build scripts such as user addition, visudo changes, user/system ssh authorized_keys etc."
   # echo "FIND ME AND REPLACE"
   # <!-- end_system_prep
 }
