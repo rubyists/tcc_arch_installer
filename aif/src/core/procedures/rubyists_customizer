@@ -55,6 +55,12 @@ customizer_install_support_packages ()
 	cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
 	chown root:root /etc/pacman.conf
 	chmod 644 /etc/pacman.conf
+	
+	# This will get rebuilt anyways and stops potential errors
+	rm /etc/profile.d/locale.sh
+	
+	# Now sync and update the package lists, then upgrade the system.
+	sudo pacman -Syy
 	sudo pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
 	
 	# Get all needed AUR packages for our configuration.
