@@ -25,7 +25,7 @@ customizer_system_prep ()
 	echo "root ALL=(ALL) ALL" > ./sudoers
 	echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
 	mv -f ./sudoers /etc/sudoers
-	chown root:root /etc/suders
+	chown root:root /etc/sudoers
 	chmod 440 /etc/sudoers
 	
 	# Set up ssh access to 'callcenter'
