@@ -10,8 +10,10 @@ customizer_system_prep ()
 {
   # <!-- begin_system_prep = Rubyists, LLC. Default Build -->
   # Create and populate a directory with git pull of all our required files going forward.
-	mkdir -p /usr/local/rubyists/config
-  cd /usr/local/rubyists/config
+	BUILD_CONFIG_DIR="/usr/local/rubyists/config"
+	
+	mkdir -p $BUILD_CONFIG_DIR
+  cd $BUILD_CONFIG_DIR
 	# CHANGE ME - Replace with final repo url
   git clone git@githost.dom/rubyists/default_build.git
   cd default_build
@@ -28,13 +30,11 @@ customizer_system_prep ()
 	
 	# Set up ssh access to 'callcenter'
 	# Physically ensure proper owner+perms are set correctly.
-	cp -R /usr/local/rubyists/config/default_build/.ssh /home/useradd/
+	cp -R $BUILD_CONFIG_DIR/default_build/.ssh /home/useradd/
 	chown -R callcenter:users /home/callcenter/.ssh
 	chmod 700 /home/callcenter/.ssh
 	chmod 600 /home/callcenter/.ssh/authorized_keys
 	
-	# Change to 'callcenter'. All further work should be owned by 'callcenter'
-	su - callcenter
   # <!-- end_system_prep
 }
 
@@ -44,9 +44,18 @@ customizer_install_support_packages ()
 	# Expect 'callcenter'
   whoami
 	
+	# Change to 'callcenter'. All further work should be owned by 'callcenter'
+	su - callcenter
+
 	# Configure filesystem for package builds
   mkdir $HOME/builds
   cd $HOME/builds
+
+	# Copy our required pacman.conf into place and update system. Capture a logfile of the action.
+	cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
+	chown root:root /etc/pacman.conf
+	chmod 644 /etc/pacman.conf
+	sudo pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
 	
 	# Get all needed AUR packages for our configuration.
 	# TODO: Change this so a sourced file of packages we can pass to a looped $(wget $url)
@@ -58,7 +67,7 @@ customizer_install_support_packages ()
   wget http://aur.archlinux.org/packages/so/socklog-dietlibc/socklog-dietlibc.tar.gz
   wget http://aur.archlinux.org/packages/fr/freeswitch-git/freeswitch-git.tar.gz
   
-	# Extract, build, create, and install AUR packages we grabbed
+	# Now extract, build, create, and install AUR packages we grabbed
 	# TODO: Change this to a sourced, ordered, file for package install
   for name in ./*.gz ; do tar -xzvf $name ; done
   cd fgetty && makepkg -si
