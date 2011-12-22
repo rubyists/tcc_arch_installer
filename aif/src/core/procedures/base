@@ -31,8 +31,7 @@ phase_system=(\
 	package_list \
 	install_packages \
 	configure_system \
-	install_bootloader \
-  final_customizing)
+	install_bootloader)
 
 phase_finish=(msg_report)
 
@@ -175,17 +174,4 @@ worker_install_bootloader ()
 worker_msg_report ()
 {
 	show_report
-}
-
-
-worker_final_customizing ()
-{
-  # <!-- begin_worker_final_customizing = Rubyists, LLC. Default Build -->
-  echo "CUSTOM FREESWITCH PREPARATION"
-	source "$PWD/rubyists_customizer"
-	
-	customizer_system_prep \
-	customizer_install_support_packages \
-	customizer_configure_runit_services_and_logs
-  # <!-- end_worker_final_customizing -->
 }

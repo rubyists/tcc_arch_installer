@@ -41,8 +41,19 @@ TARGET_GROUPS='base base-devel'       # all packages in this group will be insta
 
 worker_configure_system () {
   preconfigure_target
-    sed -i 's/^HOSTNAME="myhost"/HOSTNAME="freeswitch"/' $var_TARGET_DIR/etc/rc.conf
-    postconfigure_target
+  sed -i 's/^HOSTNAME="myhost"/HOSTNAME="freeswitch"/' $var_TARGET_DIR/etc/rc.conf
+  postconfigure_target
+  
+  # <!-- begin_rubyists_final_customizing = Rubyists, LLC. Default Build -->  
+  # Load builder functions. - Everything comes into play through this call
+  source "$PWD/rubyists_customizer"
+  
+  # Now we can call our own setup functions
+  echo "Rubyists, LLC. FS Box-It deployment started."
+  customizer_system_prep \
+	customizer_install_support_packages \
+	customizer_configure_runit_services_and_logs
+	# <!-- end_rubyists_final_customizing -->
 }
 
 PART_ACCESS= # can be set to 'uuid', 'dev', 'label', or leave empty for 'dev'
