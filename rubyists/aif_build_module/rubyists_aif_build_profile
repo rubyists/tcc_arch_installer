@@ -44,11 +44,17 @@ worker_configure_system () {
   sed -i 's/^HOSTNAME="myhost"/HOSTNAME="freeswitch"/' $var_TARGET_DIR/etc/rc.conf
   postconfigure_target
   
+  # TODO: Define where to configure the network itself. Is that done directly after the sed?Just prior to?
+  #       Or should we call it *now*? - We need to ensure the network is up at this point so the remainder of our custom stuff works correctly.
+  #
   # <!-- begin_rubyists_final_customizing = Rubyists, LLC. Default Build -->  
   # Load builder functions. - Everything comes into play through this call
-  source "$PWD/rubyists_customizer"
+  #
+  # I think we don't need the following because we're calling AIF with '-p' and passing the procedure file directly.
+  # source "$PWD/rubyists_customizer"
   
   # Now we can call our own setup functions
+  # Since we passed in the procedure file with '-p' we can call these functions/methods directly, now.
   echo "Rubyists, LLC. FS Box-It deployment started."
   customizer_system_prep \
 	customizer_install_support_packages \
