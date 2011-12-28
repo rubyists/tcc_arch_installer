@@ -39,9 +39,19 @@ customizer_system_prep ()
 	cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
 	chown root:root /etc/pacman.conf
 	chmod 644 /etc/pacman.conf
-	
+
+  # Install our network config
+  cp $BUILD_CONFIG_DIR/default_build/etc/rc.conf /etc/
+  cp $BUILD_CONFIG_DIR/default_build/etc/networks.d/rubists-ethernet /etc/networks.d/
+  
+  # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
+  for name in {/etc/rc.conf, /etc/networks.d/rubyists-ethernet}; do
+    sudo chown root:root $name
+    sudo chmod 644 $name
+  done
+
 	# This will get rebuilt anyways and stops potential errors
-	rm /etc/profile.d/locale.sh
+	sudo rm /etc/profile.d/locale.sh
 	
 	# Now sync and update the package lists, then upgrade the system.
 	sudo pacman -Syy
