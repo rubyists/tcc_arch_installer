@@ -10,39 +10,39 @@ customizer_system_prep ()
 {
   # <!-- begin_system_prep = Rubyists, LLC. Default Build -->
   # Create and populate a directory with git pull of all our required files going forward.
-	BUILD_CONFIG_DIR="/usr/local/rubyists/config"
+	BUILD_CONFIG_DIR="/usr/local/rubyists"
 	
-	mkdir -p $BUILD_CONFIG_DIR
+	sudo mkdir -p $BUILD_CONFIG_DIR
   cd $BUILD_CONFIG_DIR
 	# CHANGE ME - Replace with final repo url
-  git clone git@githost.dom/rubyists/default_build.git
+  sudo git clone git@githost.dom/rubyists/default_build.git
   cd default_build
 	
 	# Add 'callcenter' user
-	useradd -g users -m -G wheel -s /bin/bash callcenter
+	sudo useradd -g users -m -G wheel -s /bin/bash callcenter
 	
 	# Configure our preferred, minimalistic, sudoers file
-	echo "root ALL=(ALL) ALL" > ./sudoers
-	echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
-	mv -f ./sudoers /etc/sudoers
-	chown root:root /etc/sudoers
-	chmod 440 /etc/sudoers
+	sudo echo "root ALL=(ALL) ALL" > ./sudoers
+	sudo echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
+	sudo mv -f ./sudoers /etc/sudoers
+	sudo chown root:root /etc/sudoers
+	sudo chmod 440 /etc/sudoers
 	
 	# Set up ssh access to 'callcenter'
 	# Physically ensure proper owner+perms are set correctly.
-	cp -R $BUILD_CONFIG_DIR/default_build/.ssh /home/useradd/
-	chown -R callcenter:users /home/callcenter/.ssh
-	chmod 700 /home/callcenter/.ssh
-	chmod 600 /home/callcenter/.ssh/authorized_keys
+	sudo cp -R $BUILD_CONFIG_DIR/default_build/.ssh /home/useradd/
+	sudo chown -R callcenter:users /home/callcenter/.ssh
+	sudo chmod 700 /home/callcenter/.ssh
+	sudo chmod 600 /home/callcenter/.ssh/authorized_keys
 	
 	# Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-	cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
-	chown root:root /etc/pacman.conf
-	chmod 644 /etc/pacman.conf
+	sudo cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
+	sudo chown root:root /etc/pacman.conf
+	sudo chmod 644 /etc/pacman.conf
 
   # Install our network config
-  cp $BUILD_CONFIG_DIR/default_build/etc/rc.conf /etc/
-  cp $BUILD_CONFIG_DIR/default_build/etc/networks.d/rubists-ethernet /etc/networks.d/
+  sudo cp $BUILD_CONFIG_DIR/default_build/etc/rc.conf /etc/
+  sudo cp $BUILD_CONFIG_DIR/default_build/etc/networks.d/rubists-ethernet /etc/networks.d/
   
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   for name in {/etc/rc.conf, /etc/networks.d/rubyists-ethernet}; do
