@@ -76,9 +76,9 @@ customizer_install_support_packages ()
 	# TODO: Change this to a sourced, ordered, file for package install
   for name in ./*.gz ; do tar -xzvf $name ; done
   cd fgetty && makepkg -si
-  cd ../runit-dietlib && makepkg -si
+  cd ../runit-dietlibc && makepkg -si
   cd ../runit-run && makepkg -si
-  cd ../socklog-dietlib && makepkg -si
+  cd ../socklog-dietlibc && makepkg -si
   cd ../runit-services && makepkg -si
   cd ../sv-helper && makepkg -si
   cd ../freeswitch-git && makepkg -si
