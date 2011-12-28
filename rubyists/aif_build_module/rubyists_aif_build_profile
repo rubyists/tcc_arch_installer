@@ -49,12 +49,8 @@ worker_configure_system () {
   #
   # <!-- begin_rubyists_final_customizing = Rubyists, LLC. Default Build -->  
   # Load builder functions. - Everything comes into play through this call
-  #
-  # I think we don't need the following because we're calling AIF with '-p' and passing the procedure file directly.
-  # source "$PWD/rubyists_customizer"
-  
-  # Now we can call our own setup functions
-  # Since we passed in the procedure file with '-p' we can call these functions/methods directly, now.
+  # We're calling AIF with '-p' and passing the procedure file directly, so all functions/procedures should be available here.
+  # So, now we call our own setup functions
   echo "Rubyists, LLC. FS Box-It deployment started."
   customizer_system_prep \
 	customizer_install_support_packages \
