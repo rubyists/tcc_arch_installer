@@ -105,6 +105,9 @@ customizer_install_support_packages ()
   cd ../runit-services && makepkg -si
   cd ../sv-helper && makepkg -si
   cd ../freeswitch-git && makepkg -si
+
+	# Mark that we completed successfully
+	return 0
   # <!-- end_install_support_packages -->
 }
 
@@ -124,5 +127,8 @@ customizer_configure_runit_services_and_logs ()
   # Enable freeswitch as a default service last always. Not required, just good form that last service enabled
   # be that which everything else was installed as support for.
   ln -s /etc/sv/freeswitch /service/freeswitch 
+
+	# Mark that we completed successfully
+	return 0
   # <!-- end_configure_runit_services_and_logs -->
 }
