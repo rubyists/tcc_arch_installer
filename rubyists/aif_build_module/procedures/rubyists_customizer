@@ -74,6 +74,9 @@ customizer_install_support_packages ()
 
 	# Now, chroot and execute within the context of the new system.
   echo "STARTING CHROOT"
+	# Installing fakeroot in chroot tree.
+	echo "Installing fakeroot in chroot tree."
+	chroot --userspec=root:root /mnt/ pacman -S fakeroot
   # Add 'callcenter' user now that we've populated it's homedir with the authorized_keys file.
   chroot --userspec=root:root /mnt/ useradd -g users -G wheel -s /bin/bash callcenter
   # Ensure that callcenter owns it's homedir and files, then su to callcenter to start pkg builds.
