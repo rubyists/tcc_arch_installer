@@ -105,6 +105,7 @@ customizer_install_support_packages ()
   # Now extract, build, create, and install AUR packages we grabbed
   # TODO: Change this to a sourced, ordered, file for package install
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds ; for name in ./*.gz ; do tar -xzvf $name ; done'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/chown -R callcenter:users /home/callcenter/builds
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/fgetty ; makepkg -si'
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-dietlibc ; makepkg -si'
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-run ; makepkg -si'
