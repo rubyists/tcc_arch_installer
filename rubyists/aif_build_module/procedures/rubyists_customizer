@@ -53,8 +53,10 @@ customizer_system_prep ()
 	# We need to chroot to the base of the new install for everything from here forward
 	#chroot /mnt/
   # Now sync and update the package lists, then upgrade the system.
-  pacman -Syy --root /mnt/
-  pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu --root /mnt/
+	echo "Installer sees installed_system's mount as: ${var_TARGET_DIR}"
+	
+  chroot --userspec=root:root /mnt/ pacman -Syy
+  chroot --userspec=root:root /mnt/ pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
   # <!-- end_system_prep
 }
 
