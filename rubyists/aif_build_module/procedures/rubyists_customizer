@@ -75,7 +75,6 @@ customizer_install_support_packages ()
   chroot --userspec=root:root /mnt/ useradd -g users -G wheel -s /bin/bash callcenter
   # Ensure that callcenter owns it's homedir and files, then su to callcenter to start pkg builds.
 	chroot --userspec=root:root /mnt/ chown -R callcenter:users /home/callcenter
-  chroot --userspec=root:root /mnt/ su -l callcenter -s /bin/bash
 
   # NOTE: This is where masterkorp's work goes. This is where we install and configure packages.
   #
@@ -84,10 +83,11 @@ customizer_install_support_packages ()
   
   # Configure filesystem for package builds
   chroot --userspec=callcenter:users --groups=wheel /mnt/ mkdir $HOME/builds
-  chroot --userspec=callcenter:users --groups=wheel /mnt/ cd $HOME/builds
+  # chroot --userspec=callcenter:users --groups=wheel /mnt/ cd $HOME/builds
 
   # Get all needed AUR packages for our configuration.
   # TODO: Change this so a sourced file of packages we can pass to a looped $(wget $url)
+  chroot --userspec=callcenter:users --groups=wheel /mnt/ echo "**** STARTING BUILDS ****"
   chroot --userspec=callcenter:users --groups=wheel /mnt/ 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz'
   chroot --userspec=callcenter:users --groups=wheel /mnt/ 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/ru/runit-dietlibc/runit-dietlibc.tar.gz'
   chroot --userspec=callcenter:users --groups=wheel /mnt/ 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/ru/runit-run/runit-run.tar.gz'
