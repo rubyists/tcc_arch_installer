@@ -27,16 +27,6 @@ customizer_system_prep ()
    chown root:root $MOUNT/etc/sudoers
   fi
 
-  # Add 'callcenter' user
-  useradd -g users -m -G wheel -s /bin/bash callcenter
-
-  # Set up ssh access to 'callcenter'
-  # Physically ensure proper owner+perms are set correctly.
-  cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh $MOUNT/home/callcenter/
-  chown -R callcenter:users $MOUNT/home/callcenter/.ssh
-  chmod 700 $MOUNT/home/callcenter/.ssh
-  chmod 600 $MOUNT/home/callcenter/.ssh/authorized_keys
-
   # Copy our required pacman.conf into place and update system. Capture a logfile of the action.
   cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf $MOUNT/etc/pacman.conf
   chown root:root $MOUNT/etc/pacman.conf
@@ -59,22 +49,40 @@ customizer_system_prep ()
     rm $MOUNT/etc/profile.d/locale.sh
   fi
 
+	# We need to chroot to the base of the new install for everything from here forward
+	#chroot /mnt/
   # Now sync and update the package lists, then upgrade the system.
-  pacman -Syy
-  pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
+  pacman -Syy --root /mnt/
+  pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu --root /mnt/
   # <!-- end_system_prep
 }
 
 customizer_install_support_packages ()
 {
   # <!-- begin_install_support_packages = Rubyists, LLC. Default Build -->
+  # Change to 'callcenter'. All further work should be owned by 'callcenter'
+
+  # Set up ssh access to 'callcenter', we;ll add the actual user when we chroot.
+  # Physically ensure proper owner+perms are set correctly.
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh $MOUNT/home/callcenter/
+  chown -R callcenter:users $MOUNT/home/callcenter/.ssh
+  chmod 700 $MOUNT/home/callcenter/.ssh
+  chmod 600 $MOUNT/home/callcenter/.ssh/authorized_keys
+
+	# Now, chroot and execute within the context of the new system.
+  chroot /mnt/
+  # Add 'callcenter' user now that we've populated it's homedir with the authorized_keys file.
+  useradd -g users -m -G wheel -s /bin/bash callcenter
+
+  # Ensure that callcenter owns it's homedir and files, then su to callcenter to start pkg builds.
+	chown -R callcenter:users /home/callcenter
+  su -l callcenter -s /bin/bash
+
   # Expect 'callcenter'
   echo "**** I AM $(whoami) ****"
-
-  # Change to 'callcenter'. All further work should be owned by 'callcenter'
-  su - callcenter
-
+  
   # Configure filesystem for package builds
+  cd $HOME
   mkdir $HOME/builds
   cd $HOME/builds
 
