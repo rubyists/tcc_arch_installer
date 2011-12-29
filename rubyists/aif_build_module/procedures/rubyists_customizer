@@ -103,12 +103,12 @@ customizer_install_support_packages ()
   # TODO: Change this to a sourced, ordered, file for package install
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; for name in ./*.gz ; do tar -xzvf $name ; done'
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd fgetty && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../runit-dietlibc && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../runit-run && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../socklog-dietlibc && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../runit-services && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../sv-helper && makepkg -si'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd ../freeswitch-git && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd runit-dietlibc && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd runit-run && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd socklog-dietlibc && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd runit-services && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd sv-helper && makepkg -si'
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; cd freeswitch-git && makepkg -si'
   
 	# Mark that we completed successfully
 	return 0
