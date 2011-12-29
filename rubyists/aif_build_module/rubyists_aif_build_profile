@@ -40,7 +40,8 @@ worker_intro () {
   # Need networking from here forward. 
   echo "nameserver 4.2.2.2" > /etc/resolv.conf
   echo "nameserver 4.2.2.3" >> /etc/resolv.conf
-  /usr/sbin/dhcpcd
+  #/usr/sbin/dhcpcd
+  netcfg -u rubyists-ethernet
   sleep 10
   }
 
