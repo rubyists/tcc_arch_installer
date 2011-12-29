@@ -39,7 +39,8 @@ customizer_system_prep ()
 
   # Install our network config
   sudo cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf /etc/
-  sudo cp -R $BUILD_CONFIG_DIR/default_build/etc/network.d /etc/
+  sudo cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d /etc/
+
 
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   for name in {/etc/rc.conf,/etc/pacman.conf,/etc/network.d/rubyists-ethernet}; do
