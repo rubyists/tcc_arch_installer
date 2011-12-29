@@ -23,37 +23,37 @@ customizer_system_prep ()
   chown root:root /etc/sudoers
 
   # Add 'callcenter' user
-  sudo useradd -g users -m -G wheel -s /bin/bash callcenter
+  useradd -g users -m -G wheel -s /bin/bash callcenter
 
   # Set up ssh access to 'callcenter'
   # Physically ensure proper owner+perms are set correctly.
-  sudo cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh /home/callcenter/
-  sudo chown -R callcenter:users /home/callcenter/.ssh
-  sudo chmod 700 /home/callcenter/.ssh
-  sudo chmod 600 /home/callcenter/.ssh/authorized_keys
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh /home/callcenter/
+  chown -R callcenter:users /home/callcenter/.ssh
+  chmod 700 /home/callcenter/.ssh
+  chmod 600 /home/callcenter/.ssh/authorized_keys
 
   # Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-  sudo cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf /etc/pacman.conf
-  sudo chown root:root /etc/pacman.conf
-  sudo chmod 644 /etc/pacman.conf
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf /etc/pacman.conf
+  chown root:root /etc/pacman.conf
+  chmod 644 /etc/pacman.conf
 
   # Install our network config
-  sudo cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf /etc/
-  sudo cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d /etc/
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf /etc/
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d /etc/
 
 
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   for name in {/etc/rc.conf,/etc/pacman.conf,/etc/network.d/rubyists-ethernet}; do
-    sudo chown root:root $name
-    sudo chmod 644 $name
+    chown root:root $name
+    chmod 644 $name
   done
 
   # This will get rebuilt anyways and stops potential errors
-  sudo rm /etc/profile.d/locale.sh
+  rm /etc/profile.d/locale.sh
 
   # Now sync and update the package lists, then upgrade the system.
-  sudo pacman -Syy
-  sudo pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
+  pacman -Syy
+  pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
   # <!-- end_system_prep
 }
 
@@ -97,17 +97,17 @@ customizer_configure_runit_services_and_logs ()
 {
   # <!-- begin_configure_runit_services_and_logs = Rubyists, LLC. Default Build -->
   # Create default runit services
-  sudo ln -s /etc/sv/sshd /service/sshd
-  sudo ln -s /etc/sv/cron /service/cron
+  ln -s /etc/sv/sshd /service/sshd
+  ln -s /etc/sv/cron /service/cron
 
   # Set up socklog
-  sudo socklog-conf unix root daemon
-  sudo socklog-conf klog root daemon
-  sudo ln -s /etc/sv/socklog-unix /service/socklog-unix
-  sudo ln -s /etc/sv/socklog-klog /service/socklog-klog
+  socklog-conf unix root daemon
+  socklog-conf klog root daemon
+  ln -s /etc/sv/socklog-unix /service/socklog-unix
+  ln -s /etc/sv/socklog-klog /service/socklog-klog
 
   # Enable freeswitch as a default service last always. Not required, just good form that last service enabled
   # be that which everything else was installed as support for.
-  sudo ln -s /etc/sv/freeswitch /service/freeswitch 
+  ln -s /etc/sv/freeswitch /service/freeswitch 
   # <!-- end_configure_runit_services_and_logs -->
 }
