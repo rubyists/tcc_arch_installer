@@ -62,11 +62,11 @@ worker_configure_system () {
   echo "Rubyists, LLC. FS Box-It started."
   echo "___STARTING SYSTEM_PREP___"
   customizer_system_prep \
-  echo "___ENDING SYSTEM_PREP___" \
-  echo "___STARTING INSTALL_SUPPORT_PACKAGES___" \
+  echo "___ENDING SYSTEM_PREP___"
+  echo "___STARTING INSTALL_SUPPORT_PACKAGES___"
   customizer_install_support_packages \
-	echo "___ENDING INSTALL_SUPPORT_PACKAGES___" \
-  echo "___STARTING RUNIT_SERVICES_AND_LOGS___" \
+	echo "___ENDING INSTALL_SUPPORT_PACKAGES___"
+  echo "___STARTING RUNIT_SERVICES_AND_LOGS___"
 	customizer_configure_runit_services_and_logs \
 	echo "___ENDING RUNIT_SERVICES_AND_LOGS___"
 	# <!-- end_rubyists_final_customizing -->
