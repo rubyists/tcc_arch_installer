@@ -35,7 +35,12 @@ TARGET_PACKAGES= # you can also specify separate packages to install (this is em
 # you can optionally also override some functions...
 # This way you can change/extend/remove pretty much all functionality in AIF !
 worker_intro () {
-  inform "Automatic procedure running the generic-install-on-sda example config.  THIS WILL ERASE AND OVERWRITE YOUR /DEV/SDA.  IF YOU DO NOT WANT THIS PRESS CTRL+C WITHIN 10 SECONDS"
+  inform "Automatic procedure running the RUBYISTS LLC Default config.  THIS WILL ERASE AND OVERWRITE YOUR /DEV/SDA.  IF YOU DO NOT WANT THIS PRESS CTRL+C WITHIN 10 SECONDS"
+  
+  # Need networking from here forward. 
+  echo "nameserver 4.2.2.2" > /etc/resolv.conf
+  echo "nameserver 4.2.2.3" >> /etc/resolv.conf
+  /usr/sbin/dhcpcd
   sleep 10
   }
 

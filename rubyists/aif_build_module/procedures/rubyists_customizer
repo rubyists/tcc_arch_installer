@@ -4,7 +4,7 @@
 # Contains routines we use to help flesh out our additionals.
 
 # Dependencies
-depend_procedure core base automatic
+depend_procedure core automatic
 
 customizer_system_prep ()
 {
