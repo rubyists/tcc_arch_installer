@@ -11,18 +11,20 @@ customizer_system_prep ()
   # <!-- begin_system_prep = Rubyists, LLC. Default Build -->
   # Create and populate a directory with git pull of all our required files going forward.
   BUILD_CONFIG_DIR="/home/arch/tcc_arch_installer/rubyists"
-
   cd $BUILD_CONFIG_DIR/default_build
 
+  # Configure where the being-built install is.
+  MOUNT="/mnt"
+
   # Configure our preferred, minimalistic, sudoers file
-  if [ -f "/etc/sudoers" ]; then
-    rm -f /etc/sudoers
+  if [ -f "$MOUNT/etc/sudoers" ]; then
+    rm -f $MOUNT/etc/sudoers
   else
    echo "root ALL=(ALL) ALL" > ./sudoers
    echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
-   mv -f ./sudoers /etc/sudoers
-   chmod 0440 /etc/sudoers
-   chown root:root /etc/sudoers
+   mv -f ./sudoers $MOUNT/etc/sudoers
+   chmod 0440 $MOUNT/etc/sudoers
+   chown root:root $MOUNT/etc/sudoers
   fi
 
   # Add 'callcenter' user
@@ -30,31 +32,31 @@ customizer_system_prep ()
 
   # Set up ssh access to 'callcenter'
   # Physically ensure proper owner+perms are set correctly.
-  cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh /home/callcenter/
-  chown -R callcenter:users /home/callcenter/.ssh
-  chmod 700 /home/callcenter/.ssh
-  chmod 600 /home/callcenter/.ssh/authorized_keys
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh $MOUNT/home/callcenter/
+  chown -R callcenter:users $MOUNT/home/callcenter/.ssh
+  chmod 700 $MOUNT/home/callcenter/.ssh
+  chmod 600 $MOUNT/home/callcenter/.ssh/authorized_keys
 
   # Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf /etc/pacman.conf
-  chown root:root /etc/pacman.conf
-  chmod 644 /etc/pacman.conf
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf $MOUNT/etc/pacman.conf
+  chown root:root $MOUNT/etc/pacman.conf
+  chmod 644 $MOUNT/etc/pacman.conf
 
   # Install our network config
-  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf /etc/
-  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d /etc/
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf $MOUNT/etc/
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d $MOUNT/etc/
 
 
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   echo "NOTE - setting permissions on replaced files"
   for name in {/etc/rc.conf,/etc/pacman.conf,/etc/network.d/rubyists-ethernet}; do
-    chown root:root $name
-    chmod 644 $name
+    chown root:root $MOUNT/$name
+    chmod 644 $MOUNT/$name
   done
 
   # This will get rebuilt anyways and stops potential errors
-  if [ -f "/etc/profile.d/locale.sh" ]; then
-    rm /etc/profile.d/locale.sh
+  if [ -f "$MOUNT/etc/profile.d/locale.sh" ]; then
+    rm $MOUNT/etc/profile.d/locale.sh
   fi
 
   # Now sync and update the package lists, then upgrade the system.
