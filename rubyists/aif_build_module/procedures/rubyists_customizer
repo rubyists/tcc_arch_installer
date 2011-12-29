@@ -117,18 +117,18 @@ customizer_configure_runit_services_and_logs ()
 {
   # <!-- begin_configure_runit_services_and_logs = Rubyists, LLC. Default Build -->
   # Create default runit services
-  ln -s /etc/sv/sshd /service/sshd
-  ln -s /etc/sv/cron /service/cron
+  chroot --userspec=root:root /mnt/ ln -s /etc/sv/sshd /service/sshd
+  chroot --userspec=root:root /mnt/ ln -s /etc/sv/cron /service/cron
 
   # Set up socklog
-  socklog-conf unix root daemon
-  socklog-conf klog root daemon
-  ln -s /etc/sv/socklog-unix /service/socklog-unix
-  ln -s /etc/sv/socklog-klog /service/socklog-klog
+  chroot --userspec=root:root /mnt/ socklog-conf unix root daemon
+  chroot --userspec=root:root /mnt/ socklog-conf klog root daemon
+  chroot --userspec=root:root /mnt/ ln -s /etc/sv/socklog-unix /service/socklog-unix
+  chroot --userspec=root:root /mnt/ ln -s /etc/sv/socklog-klog /service/socklog-klog
 
   # Enable freeswitch as a default service last always. Not required, just good form that last service enabled
   # be that which everything else was installed as support for.
-  ln -s /etc/sv/freeswitch /service/freeswitch 
+  chroot --userspec=root:root /mnt/ ln -s /etc/sv/freeswitch /service/freeswitch 
 
 	# Mark that we completed successfully
 	return 0
