@@ -89,7 +89,7 @@ customizer_install_support_packages ()
   # Get all needed AUR packages for our configuration.
   # TODO: Change this so a sourced file of packages we can pass to a looped $(wget $url)
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'echo "**** STARTING BUILDS ****"'
-  chroot --userspec=root:root /mnt/ su -l callcenter -c "cd $HOME/builds ; wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz"
+  chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz'
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/ru/runit-dietlibc/runit-dietlibc.tar.gz'
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/ru/runit-run/runit-run.tar.gz'
   chroot --userspec=root:root /mnt/ su -l callcenter -c 'cd $HOME/builds ; wget http://aur.archlinux.org/packages/ru/runit-services/runit-services.tar.gz'
