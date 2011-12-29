@@ -13,40 +13,37 @@ customizer_system_prep ()
 	BUILD_CONFIG_DIR="/home/arch/tcc_arch_installer/rubyists"
 	
 	sudo mkdir -p $BUILD_CONFIG_DIR
-  cd $BUILD_CONFIG_DIR
-	# CHANGE ME - Replace with final repo url
-  #sudo git clone git@githost.dom/rubyists/default_build.git
-  cd default_build
-
+  cd $BUILD_CONFIG_DIR/default_build
+	
+	# Configure our preferred, minimalistic, sudoers file
+  sudo rm -f /etc/sudoers
+	sudo echo "root ALL=(ALL) ALL" > ./sudoers
+	sudo echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
+	sudo mv -f ./sudoers /etc/sudoers
+	sudo chmod 0440 /etc/sudoers
+	sudo chown root:root /etc/sudoers
 	
 	# Add 'callcenter' user
 	sudo useradd -g users -m -G wheel -s /bin/bash callcenter
 	
-	# Configure our preferred, minimalistic, sudoers file
-	sudo echo "root ALL=(ALL) ALL" > ./sudoers
-	sudo echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
-	sudo mv -f ./sudoers /etc/sudoers
-	sudo chown root:root /etc/sudoers
-	sudo chmod 440 /etc/sudoers
-	
 	# Set up ssh access to 'callcenter'
 	# Physically ensure proper owner+perms are set correctly.
-	sudo cp -R $BUILD_CONFIG_DIR/default_build/.ssh /home/useradd/
+	sudo cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter/.ssh /home/callcenter/
 	sudo chown -R callcenter:users /home/callcenter/.ssh
 	sudo chmod 700 /home/callcenter/.ssh
 	sudo chmod 600 /home/callcenter/.ssh/authorized_keys
 	
 	# Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-	sudo cp $BUILD_CONFIG_DIR/default_build/pacman/pacman.conf /etc/pacman.conf
+	sudo cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf /etc/pacman.conf
 	sudo chown root:root /etc/pacman.conf
 	sudo chmod 644 /etc/pacman.conf
 
   # Install our network config
-  sudo cp $BUILD_CONFIG_DIR/default_build/etc/rc.conf /etc/
-  sudo cp $BUILD_CONFIG_DIR/default_build/etc/networks.d/rubists-ethernet /etc/networks.d/
+  sudo cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf /etc/
+  sudo cp -R $BUILD_CONFIG_DIR/default_build/etc/network.d /etc/
   
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
-  for name in {/etc/rc.conf, /etc/networks.d/rubyists-ethernet}; do
+  for name in {/etc/rc.conf,/etc/pacman.conf,/etc/network.d/rubyists-ethernet}; do
     sudo chown root:root $name
     sudo chmod 644 $name
   done
