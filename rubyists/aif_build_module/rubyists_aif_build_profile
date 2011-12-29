@@ -25,7 +25,7 @@ TIMEZONE=America/Toronto
 # RUNTIME_REPOSITORIES same format as TARGET_REPOSITORIES
 RUNTIME_REPOSITORIES=$TARGET_REPOSITORIES
 # space separated list
-RUNTIME_PACKAGES='e2fsprogs vim libjpeg-turbo xz readline pam ncurses linux-api-headers openssh openssl git ifplugd netcfg bash-completion'
+RUNTIME_PACKAGES='e2fsprogs vim libjpeg-turbo xz readline pam ncurses linux-api-headers openssh openssl git ifplugd netcfg bash-completion fakeroot'
 
 # packages to install
 TARGET_GROUPS='base base-devel'       # all packages in this group will be installed (defaults to base if no group and no packages are specified)
