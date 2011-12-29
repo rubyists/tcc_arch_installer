@@ -41,7 +41,9 @@ worker_intro () {
   echo "nameserver 4.2.2.2" > /etc/resolv.conf
   echo "nameserver 4.2.2.3" >> /etc/resolv.conf
   #/usr/sbin/dhcpcd
-  netcfg -u rubyists-ethernet
+  #
+  # We already added the steps needed for net-profiles. This isn't needed now
+  # netcfg -u rubyists-ethernet
   sleep 10
   }
 
