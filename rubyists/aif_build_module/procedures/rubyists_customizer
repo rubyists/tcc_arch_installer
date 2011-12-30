@@ -23,8 +23,8 @@ customizer_system_prep ()
 	fi
 	
   # Install fakeroot and sudo in chroot tree. Create final sudoers file.
-	/usr/bin/yes | /usr/bin/pacman -Sy -r $MOUNT
-	/usr/bin/yes | /usr/bin/pacman -S fakeroot sudo -r $MOUNT
+	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -Sy --noconfirm
+	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -S fakeroot sudo --noconfirm
 
   echo "root ALL=(ALL) ALL" > ./sudoers
   echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
@@ -33,9 +33,11 @@ customizer_system_prep ()
   chown root:root $MOUNT/etc/sudoers
   
   # Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf $MOUNT/etc/pacman.conf
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman* $MOUNT/etc/
   chown root:root $MOUNT/etc/pacman.conf
+  chown -R root:root $MOUNT/etc/pacman.d
   chmod 644 $MOUNT/etc/pacman.conf
+  chmod 644 $MOUNT/etc/pacman.d/mirrorlist
 
   # Install our network config
   cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf $MOUNT/etc/
@@ -60,7 +62,7 @@ customizer_system_prep ()
   # Now sync and update the package lists, then upgrade the system.
 	echo "Installer sees installed_system's mount as: ${var_TARGET_DIR}"
 	
-  /usr/sbin/chroot --userspec=root:root /mnt/ pacman -Syy
+  /usr/sbin/chroot --userspec=root:root /mnt/ pacman -Syy --noconfirm
   /usr/sbin/chroot --userspec=root:root /mnt/ pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
   # <!-- end_system_prep
 }
