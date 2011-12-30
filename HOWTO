@@ -9,7 +9,36 @@ Modify /etc/pacman.conf and add freeswitch.org and required custom repos to belo
 Modify /etc/pacman.conf to enable most options such as UseSyslog, ShowSize, UseDelta, TotalDownload, and CheckSpace.
 
 Remove /etc/profile.d/locale.sh if it exists. The system will regenerate it.
+BUILD INSTRUCTIONS
 
+On an archlinux box with a user named 'me' (can be anything), do the following:
+  
+  # Set up the environment
+  
+  # NOTE - Make sure you have your $HOME/.ssh directory set up with your key for accessing GH repos
+  #        Make sure you have your $HOME/.gitconfig set with everything GH needs
+  #        Change wheel group to not need a password if you don't want to be prompted every build.
+  #
+  mkdir $HOME/build
+  
+  # Install packages we need for building the ISO
+  sudo pacman -S time tmux fakeroot sudo devtools squashfs-tools git libisoburn --needed
+  # Grab our archiso creation repo
+  cd $HOME/build && git clone git://github.com/rubyists/archlinux_isomaker
+  # Install our mkarchiso script(s) 
+  cd archlinux_isomaker/archiso && sudo make install
+  # Remove existing tcc_arch_installer and regrab to make sure we're up to date.
+  # This will be repopulated every single ISO build run with any updates. but its also part of archlinux_isomaker so we have a copy too.
+  cd $HOME/build/archlinux_isomaker/configs/releng/root-image/home/arch
+  rm -rf tcc_arch_installer && git clone git://github.com/rubyists/tcc_arch_installer
+  cd tcc_arch_installer && git checkout development && git pull origin
+  # Now we can create a new image
+  cd $HOME/build/archlinux_isomaker/config/releng # everything is based off this directory
+  ./make_my_cd.sh # this updates the tcc_arch_installer files we populate into the ISO, and then creates 'single all' for us
+  
+
+TODO
+----
 Make sure that nothing is mount on /mnt as the upcoming package(s) upgrade(s) will modify it.
 
 Run dhcpcd eth0
