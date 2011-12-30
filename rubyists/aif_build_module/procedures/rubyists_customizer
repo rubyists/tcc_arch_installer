@@ -113,13 +113,13 @@ customizer_install_support_packages ()
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/chown -R callcenter:users /home/callcenter/builds
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/mknod /dev/null c 1 3
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/chmod 0666 /dev/null
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/fgetty ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-dietlibc ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-run ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/socklog-dietlibc ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-services ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/sv-helper ; makepkg -si'
-  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/freeswitch-git ; makepkg -si'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/fgetty ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-dietlibc ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-run ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/socklog-dietlibc ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-services ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/sv-helper ; makepkg -si --noconfirm'
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/freeswitch-git ; makepkg -si --noconfirm'
   
 	# Mark that we completed successfully
 	return 0
