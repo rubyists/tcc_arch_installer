@@ -14,55 +14,56 @@ customizer_system_prep ()
   cd $BUILD_CONFIG_DIR/default_build
 
   # Configure where the being-built install is.
-  MOUNT="/mnt"
+  # We use the installer's var_TARGET_DIR variable as that should be where the new_install system is mounted.
+  echo "Installer sees NEW_SYSTEM's mount as: ${var_TARGET_DIR}"
 
   # Configure our preferred, minimalistic, sudoers file
   # Removing here ensures sudo package has no reason to fail.
-	if [ -f "$MOUNT/etc/sudoers" ]; then
-    rm -f $MOUNT/etc/sudoers
-	fi
-	
+  if [ -f "$var_TARGET_DIR/etc/sudoers" ]; then
+    rm -f $var_TARGET_DIR/etc/sudoers
+  fi
+
+	# Create our own sudoers file, and ensure perms and ownerships
   echo "root ALL=(ALL) ALL" > ./sudoers
   echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
-  mv -f ./sudoers $MOUNT/etc/sudoers
-  chmod 0440 $MOUNT/etc/sudoers
-  chown root:root $MOUNT/etc/sudoers
-  
-  # Copy our required pacman.conf into place and update system. Capture a logfile of the action.
-  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman* $MOUNT/etc/
-  chown root:root $MOUNT/etc/pacman.conf
-  chown -R root:root $MOUNT/etc/pacman.d
-  chmod 644 $MOUNT/etc/pacman.conf
-  chmod 644 $MOUNT/etc/pacman.d/mirrorlist
+  mv -f ./sudoers $var_TARGET_DIR/etc/sudoers
+  chmod 0440 $var_TARGET_DIR/etc/sudoers
+  chown root:root $var_TARGET_DIR/etc/sudoers
 
-  # Install our network config
-  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf $MOUNT/etc/
-  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/resolv.conf $MOUNT/etc/
-  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d $MOUNT/etc/
-
-  # Update chroot's pacman. Install fakeroot, tmux, git, and sudo in chroot tree. Create final sudoers file.
-	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -Syu --noconfirm
-	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
+  # Install our network and pacman config into the chroot
+	#
+	# First the files we need
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/rc.conf $var_TARGET_DIR/etc/
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/resolv.conf $var_TARGET_DIR/etc/
+  cp $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.conf $var_TARGET_DIR/etc/
+	# Now the directories we need
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d $var_TARGET_DIR/etc/
+  cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/pacman.d $var_TARGET_DIR/etc/
 
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   echo "NOTE - setting permissions on replaced files"
-		chmod 755 
-		chown -R root:root $MOUNT/pacman.d
-  for name in {etc/rc.conf,etc/resolv.conf,etc/pacman.conf,etc/network.d/rubyists-ethernet}; do
-    chown root:root $MOUNT/$name
-    chmod 644 $MOUNT/$name
+  # First the directories
+  chmod 755 $var_TARGET_DIR/etc/pacman.d
+  chmod 755 $var_TARGET_DIR/etc/network.d
+  chown -R root:root $var_TARGET_DIR/etc/pacman.d
+  chown -R root:root $var_TARGET_DIR/etc/network.d
+
+  # Now the files
+  for name in {etc/rc.conf,etc/resolv.conf,etc/pacman.conf,etc/pacman.d/mirrorlist,etc/network.d/rubyists-ethernet}; do
+    chown root:root $var_TARGET_DIR/$name
+    chmod 644 $var_TARGET_DIR/$name
   done
 
   # This will get rebuilt anyways and stops potential errors
-  if [ -f "$MOUNT/etc/profile.d/locale.sh" ]; then
-    rm $MOUNT/etc/profile.d/locale.sh
+  if [ -f "$var_TARGET_DIR/etc/profile.d/locale.sh" ]; then
+    rm $var_TARGET_DIR/etc/profile.d/locale.sh
   fi
 
-	# We need to chroot to the base of the new install for everything from here forward
-	#chroot /mnt/
+  # Update chroot's pacman. Install fakeroot, tmux, git, and sudo in chroot tree. Create final sudoers file.
+  /usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -Syu --noconfirm
+  /usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
+
   # Now sync and update the package lists, then upgrade the system.
-	echo "Installer sees installed_system's mount as: ${var_TARGET_DIR}"
-	
   /usr/sbin/chroot --userspec=root:root /mnt/ pacman -Syy --noconfirm
   /usr/sbin/chroot --userspec=root:root /mnt/ pacman --noprogressbar --noconfirm --logfile $HOME/pacman_install_and_upgrade.log -Syu
   # <!-- end_system_prep
@@ -76,22 +77,22 @@ customizer_install_support_packages ()
   # Set up ssh access to 'callcenter', we;ll add the actual user when we chroot.
   # Physically ensure proper owner+perms are set correctly.
   echo "Copying 'callcenter' user into place.."
-  /bin/cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter $MOUNT/home/
-  /bin/chmod 700 $MOUNT/home/callcenter/.ssh
-  /bin/chmod 600 $MOUNT/home/callcenter/.ssh/authorized_keys
+  /bin/cp -R $BUILD_CONFIG_DIR/default_build/root-image/home/callcenter $var_TARGET_DIR/home/
+  /bin/chmod 700 $var_TARGET_DIR/home/callcenter/.ssh
+  /bin/chmod 600 $var_TARGET_DIR/home/callcenter/.ssh/authorized_keys
 
-	# Now, chroot and execute within the context of the new system.
+  # Now, chroot and execute within the context of the new system.
   echo "STARTING CHROOT"
   # Add 'callcenter' user now that we've populated it's homedir with the authorized_keys file.
   /usr/sbin/chroot --userspec=root:root /mnt/ /usr/sbin/useradd -g users -G wheel -s /bin/bash callcenter
   # Ensure that callcenter owns it's homedir and files, then su to callcenter to start pkg builds.
-	/usr/sbin/chroot --userspec=root:root /mnt/ /bin/chown -R callcenter:users /home/callcenter
+  /usr/sbin/chroot --userspec=root:root /mnt/ /bin/chown -R callcenter:users /home/callcenter
 
   # NOTE: This is where masterkorp's work goes. This is where we install and configure packages.
   #
   # Expect 'callcenter'
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c whoami
-  
+
   # Configure filesystem for package builds
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'mkdir $HOME/builds'
   # chroot --userspec=root:root /mnt/ su -l callcenter -c cd $HOME/builds
@@ -120,9 +121,9 @@ customizer_install_support_packages ()
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/runit-services ; makepkg -si --noconfirm'
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/sv-helper ; makepkg -si --noconfirm'
   /usr/sbin/chroot --userspec=root:root /mnt/ /bin/su -l callcenter -c 'cd $HOME/builds/freeswitch-git ; makepkg -si --noconfirm'
-  
-	# Mark that we completed successfully
-	return 0
+
+  # Mark that we completed successfully
+  return 0
   # <!-- end_install_support_packages -->
 }
 
@@ -143,7 +144,7 @@ customizer_configure_runit_services_and_logs ()
   # be that which everything else was installed as support for.
   /usr/sbin/chroot --userspec=root:root /mnt/ ln -s /etc/sv/freeswitch /service/freeswitch 
 
-	# Mark that we completed successfully
-	return 0
+  # Mark that we completed successfully
+  return 0
   # <!-- end_configure_runit_services_and_logs -->
 }
