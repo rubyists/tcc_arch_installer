@@ -24,6 +24,7 @@ customizer_system_prep ()
 	
   # Install fakeroot and sudo in chroot tree. Create final sudoers file.
 	/usr/bin/yes | /usr/bin/pacman -S fakeroot sudo -r $MOUNT
+	/usr/bin/yes | /usr/bin/pacman -Sy -r $MOUNT
 
   echo "root ALL=(ALL) ALL" > ./sudoers
   echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
