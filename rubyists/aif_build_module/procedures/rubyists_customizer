@@ -22,10 +22,6 @@ customizer_system_prep ()
     rm -f $MOUNT/etc/sudoers
 	fi
 	
-  # Install fakeroot and sudo in chroot tree. Create final sudoers file.
-	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -Sy --noconfirm
-	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -S fakeroot sudo --noconfirm
-
   echo "root ALL=(ALL) ALL" > ./sudoers
   echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
   mv -f ./sudoers $MOUNT/etc/sudoers
@@ -44,11 +40,16 @@ customizer_system_prep ()
   cp $BUILD_CONFIG_DIR/default_build/root-image/etc/resolv.conf $MOUNT/etc/
   cp -R $BUILD_CONFIG_DIR/default_build/root-image/etc/network.d $MOUNT/etc/
 
+  # Update chroot's pacman. Install fakeroot, tmux, git, and sudo in chroot tree. Create final sudoers file.
+	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -Syu --noconfirm
+	/usr/sbin/chroot --userspec=root:root /mnt/ /usr/bin/pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
 
   # Make sure root owns the replaced files. default ownership is root:root, perms are 644.
   echo "NOTE - setting permissions on replaced files"
-  for name in {/etc/rc.conf,/etc/resolv.conf,/etc/pacman.conf,/etc/network.d/rubyists-ethernet}; do
-    chown -R root:root $MOUNT/$name
+		chmod 755 
+		chown -R root:root $MOUNT/pacman.d
+  for name in {etc/rc.conf,etc/resolv.conf,etc/pacman.conf,etc/network.d/rubyists-ethernet}; do
+    chown root:root $MOUNT/$name
     chmod 644 $MOUNT/$name
   done
 
