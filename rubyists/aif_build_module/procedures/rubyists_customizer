@@ -5,6 +5,11 @@
 
 # Dependencies
 depend_procedure core automatic
+# aif passes /usr/lib/aif/user/aif_build_module into its exectuion tree,
+# following rubyists_aif_build_profile (generic-install-dsa rewrite)
+# AIF calls worker_configure_system in rubyists_aif_profile. We then
+# INSIDE that function all all of ours. These are the definitions of each.
+
 
 customizer_system_prep ()
 {
