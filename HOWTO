@@ -36,7 +36,7 @@ NOTE: This requires TWO repositories. archlinux_isomaker and this one (tcc_arch_
   cd tcc_arch_installer && git checkout development && git pull origin
 
 # Now we can create a new image
-  cd $HOME/build/archlinux_isomaker/config/releng # everything is based off this directory
+  cd $HOME/build/archlinux_isomaker/configs/releng # everything is based off this directory
   ./make_my_cd.sh # this updates the tcc_arch_installer files we populate into the ISO, and then creates 'single all' for us
 
 
