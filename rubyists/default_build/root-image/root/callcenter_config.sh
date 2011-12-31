@@ -6,7 +6,7 @@ pacman -Syy --noconfirm
 
 # Now we start the builds themselves. Pacman should be happy now, dang it!
 echo "**** STARTING BUILDS ****"
-echo "**** STARTING BUILDS ****" > 1>&2 
+ 
 mkdir /tmp/builds
 wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz
 wget http://aur.archlinux.org/packages/ru/runit-dietlibc/runit-dietlibc.tar.gz
