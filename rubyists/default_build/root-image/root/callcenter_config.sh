@@ -27,8 +27,6 @@ chown root:root $var_TARGET_DIR/etc/sudoers
 
 # Now we start the builds themselves. Pacman should be happy now, dang it!
 echo "**** STARTING BUILDS ****"
-# Update chroot's pacman. Install fakeroot, tmux, git, and sudo in chroot tree. Create final sudoers file.
-pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
  
 mkdir /tmp/builds
 wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz
