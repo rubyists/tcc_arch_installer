@@ -4,8 +4,31 @@
 
 pacman -Syy --noconfirm
 
+# Configure our preferred, minimalistic, sudoers file
+# Removing here ensures sudo package has no reason to fail.
+if [ -f "/etc/sudoers" ]; then
+  rm -f /etc/sudoers
+fi
+
+pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
+
+# Configure our preferred, minimalistic, sudoers file
+# Removing here ensures sudo package has no reason to fail.
+if [ -f "/etc/sudoers" ]; then
+  rm -f /etc/sudoers
+fi
+
+# Create our own sudoers file, and ensure perms and ownerships
+echo "root ALL=(ALL) ALL" > ./sudoers
+echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> ./sudoers
+mv -f ./sudoers $var_TARGET_DIR/etc/sudoers
+chmod 0440 $var_TARGET_DIR/etc/sudoers
+chown root:root $var_TARGET_DIR/etc/sudoers
+
 # Now we start the builds themselves. Pacman should be happy now, dang it!
 echo "**** STARTING BUILDS ****"
+# Update chroot's pacman. Install fakeroot, tmux, git, and sudo in chroot tree. Create final sudoers file.
+pacman -S fakeroot tmux git devtools sudo --needed --noconfirm
  
 mkdir /tmp/builds
 wget http://aur.archlinux.org/packages/fg/fgetty/fgetty.tar.gz
