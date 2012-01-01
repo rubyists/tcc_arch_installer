@@ -32,6 +32,9 @@ mv -f ./sudoers /etc/sudoers
 chmod 0440 /etc/sudoers
 chown 0:0 /etc/sudoers
 
+# Create an administrative user for when we reboot
+customizer_add_and_configure_admin
+
 # Now we start the builds themselves. Pacman should be happy now, dang it!
 echo "**** STARTING BUILDS ****"
  
