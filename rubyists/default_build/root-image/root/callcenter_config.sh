@@ -34,7 +34,8 @@ chown 0:0 /etc/sudoers
 
 # Adding administrative user
 echo "Adding administrative user."
-/usr/sbin/useradd -m -g users -G wheel -p '$1$aeUCwEYC$TSONrOR/lQo/WWZwpHIG71' admin
+/usr/sbin/useradd -g users -G wheel -p '$1$aeUCwEYC$TSONrOR/lQo/WWZwpHIG71' admin
+/bin/chown -R admin:users /home/admin
 
 # Now we start the builds themselves. Pacman should be happy now, dang it!
 echo "**** STARTING BUILDS ****"
