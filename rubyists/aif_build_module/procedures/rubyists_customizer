@@ -84,7 +84,7 @@ customizer_install_support_packages ()
 	/usr/sbin/chroot --userspec=root:root /mnt/ /root/callcenter_config.sh
 	
 	# Now install RVM in the chroot
-	/usr/sbin/chroot --userspec=root:root /mnt/ /root/install_rvm.sh
+	/usr/sbin/chroot --userspec=callcenter:users /mnt/ /home/callcenter/install_rvm.sh
 
   # Mark that we completed successfully
   return 0
